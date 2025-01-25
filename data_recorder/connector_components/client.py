@@ -40,6 +40,7 @@ class Client(Thread, ABC):
         Subscribe to full order book.
         """
         try:
+            self.last_subscribe_time = dt.now(tz=TIMEZONE)
             self.ws = await websockets.connect(self.ws_endpoint)
 
             if self.request is not None:
@@ -49,12 +50,11 @@ class Client(Thread, ABC):
                             (self.exchange.upper(), self.sym))
 
             if self.trades_request is not None:
-                LOGGER.info('Requesting Trades: {}'.format(self.trades_request))
+                LOGGER.info('Requesting Trades: {}'.format(
+                    self.trades_request))
                 await self.ws.send(self.trades_request)
                 LOGGER.info('TRADES %s: %s subscription request sent.' %
                             (self.exchange.upper(), self.sym))
-
-            self.last_subscribe_time = dt.now(tz=TIMEZONE)
 
             # Add incoming messages to a queue, which is consumed and processed
             #  in the run() method.
@@ -62,7 +62,8 @@ class Client(Thread, ABC):
                 self.queue.put(json.loads(await self.ws.recv()))
 
         except websockets.ConnectionClosed as exception:
-            LOGGER.warn('%s: subscription exception %s' % (self.exchange, exception))
+            LOGGER.warn('%s: subscription exception %s' %
+                        (self.exchange, exception))
             self.retry_counter += 1
             elapsed = (dt.now(tz=TIMEZONE) - self.last_subscribe_time).seconds
 
@@ -91,7 +92,8 @@ class Client(Thread, ABC):
         await self.ws.send(self.request_unsubscribe)
         output = json.loads(await self.ws.recv())
 
-        LOGGER.info('Client - %s: unsubscribe successful.' % (self.exchange.upper()))
+        LOGGER.info('Client - %s: unsubscribe successful.' %
+                    (self.exchange.upper()))
         LOGGER.info('unsubscribe() -> Output:')
         LOGGER.info(output)
 

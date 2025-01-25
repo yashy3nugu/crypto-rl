@@ -8,14 +8,14 @@ logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(message)s')
 LOGGER = logging.getLogger('crypto_rl_log')
 
 # ./recorder.py
-SNAPSHOT_RATE = 1.0  # For example, 0.25 = 4x per second
+SNAPSHOT_RATE = 10.0  # For example, 0.25 = 4x per second
 BASKET = [('BTC-USD', 'tBTCUSD'),
-          # ('ETH-USD', 'tETHUSD'),
-          # ('LTC-USD', 'tLTCUSD')
+          ('ETH-USD', 'tETHUSD'),
+          ('LTC-USD', 'tLTCUSD')
           ]
 
 # ./data_recorder/connector_components/client.py
-COINBASE_ENDPOINT = 'wss://ws-feed.pro.coinbase.com'
+COINBASE_ENDPOINT = 'wss://advanced-trade-ws.coinbase.com'
 COINBASE_BOOK_ENDPOINT = 'https://api.pro.coinbase.com/products/%s/book'
 BITFINEX_ENDPOINT = 'wss://api.bitfinex.com/ws/2'
 MAX_RECONNECTION_ATTEMPTS = 100
